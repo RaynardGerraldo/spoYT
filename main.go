@@ -1,18 +1,14 @@
 package main
 
 import (
-  "net/http"
-
-  "github.com/gin-gonic/gin"
+    "os"
+    "spoyt/pkg"
 )
 
 func main() {
-  r := gin.Default()
-  r.LoadHTMLFiles("templates/index.tmpl")
-  r.GET("/index", func(c *gin.Context) {
-    c.HTML(http.StatusOK, "index.tmpl", gin.H{
-        "title": "SpoYT",
-    })
-  })
-  r.Run()
+    if len(os.Args) == 2 {
+        pkg.Cli(os.Args[1])
+    } else{
+        pkg.Web()
+    }
 }
