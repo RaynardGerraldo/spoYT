@@ -5,11 +5,12 @@ import (
     "log"
     "encoding/csv"
     "fmt"
+    //"strings"
 )
 
 func Extractor(filename string){
     file, err := os.Open(filename)
-
+    //var builder strings.Builder
     if err != nil {
         log.Fatal(err)
     }
@@ -26,6 +27,6 @@ func Extractor(filename string){
     // song,artist and duration
     for _,j := range data {
         song := fmt.Sprintf("%s %s", j[1], j[2])
-        Search(song, j[8])
+        fmt.Println(Search(song, j[8]))
     }
 }

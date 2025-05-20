@@ -8,7 +8,7 @@ import (
     "log"
 )
 
-func Search(song string, duration string){
+func Search(song string, duration string) string{
     encoded := url.QueryEscape(song)
     client := &http.Client{}
     req_link := fmt.Sprintf("https://yewtu.be/search?q=%s", encoded)
@@ -29,6 +29,6 @@ func Search(song string, duration string){
 
     body, err := io.ReadAll(resp.Body)
     fmt.Println(req_link)
-    Parser(string(body), duration)
+    return Parser(string(body), duration)
     //fmt.Println(string(body))
 }
