@@ -28,7 +28,10 @@ func Search(song string, duration string) string{
     defer resp.Body.Close()
 
     body, err := io.ReadAll(resp.Body)
-    fmt.Println(req_link)
+    if err != nil {
+        log.Fatal(err)
+    }
+
     return Parser(string(body), duration)
     //fmt.Println(string(body))
 }

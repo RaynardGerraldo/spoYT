@@ -7,5 +7,5 @@ import (
 
 func Cli(arg string){
     fmt.Println(arg)
-    util.Extractor(arg)
+    fmt.Println(util.Converter(arg))
 }

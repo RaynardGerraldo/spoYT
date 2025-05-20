@@ -1,7 +1,6 @@
 package util
 
 import (
-    "fmt"
     "regexp"
     "slices"
     "strings"
@@ -46,8 +45,6 @@ func Parser(body string, duration string) string{
     for dur,vidid := range clean_res {
        result_map[vidid] = dur_clean[dur]
     }
-
-    fmt.Println(result_map)
 
     for key,value := range result_map {
         if value == duration {
