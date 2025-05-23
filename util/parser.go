@@ -44,7 +44,7 @@ func Parser(body string, duration string) string{
         if string(duration[1:]) == dur {
             return clean_res[i]
         }
-
+        // probably just pick lesser duration ones
         yt_split := strings.Split(dur, ":")
         sp_split := strings.Split(duration, ":")
 
@@ -59,8 +59,6 @@ func Parser(body string, duration string) string{
         if absInt(yt_dur - sp_dur) <= 5 {
             return clean_res[i]
         }
-
     }
-
     return "No match"
 }
