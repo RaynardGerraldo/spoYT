@@ -11,8 +11,9 @@ import (
 func Search(song string, duration string) string{
     encoded := url.QueryEscape(song)
     client := &http.Client{}
-    req_link := fmt.Sprintf("https://yewtu.be/search?q=%s", encoded)
+    req_link := fmt.Sprintf("https://yewtu.be/search?q=%s+%s", encoded, "Audio")
     req, err := http.NewRequest("GET", req_link, nil)
+    req.Close = true
 
     if err != nil {
         log.Fatal(err)

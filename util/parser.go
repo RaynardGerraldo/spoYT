@@ -30,7 +30,6 @@ func Parser(body string, duration string) string{
     // remove dupes
     //slices.Sort(clean_res)
     clean_res = slices.Compact(clean_res)
-
     // get video duration
     dur_match := regexp.MustCompile(`.*<p class="length">([0-9][0-9]?:[0-9][0-9]:?[0-9]?[0-9]?)</p>`)
     dur_res := dur_match.FindAllStringSubmatch(body, -1)
@@ -41,26 +40,26 @@ func Parser(body string, duration string) string{
         }
     }
 
-    result_map := make(map[string]string)
-    for dur,vidid := range clean_res {
-       result_map[vidid] = dur_clean[dur]
-    }
-
-    for key,value := range result_map {
-        if value == duration {
-            return key
+    for i, dur := range dur_clean {
+        if string(duration[1:]) == dur {
+            return clean_res[i]
         }
-        min,_ := strconv.Atoi(strings.Split(value, ":")[0])
-        sec,_ := strconv.Atoi(strings.Split(value, ":")[1])
+
+        yt_split := strings.Split(dur, ":")
+        sp_split := strings.Split(duration, ":")
+
+        min,_ := strconv.Atoi(yt_split[0])
+        sec,_ := strconv.Atoi(yt_split[1])
         yt_dur := min * 60 + sec
 
-        min,_ = strconv.Atoi(strings.Split(duration, ":")[0])
-        sec,_ = strconv.Atoi(strings.Split(duration, ":")[1])
+        min,_ = strconv.Atoi(sp_split[0])
+        sec,_ = strconv.Atoi(sp_split[1])
         sp_dur := min * 60 + sec
 
         if absInt(yt_dur - sp_dur) <= 5 {
-            return key
+            return clean_res[i]
         }
+
     }
 
     return "No match"
