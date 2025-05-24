@@ -9,7 +9,7 @@ import (
     "math/rand"
 )
 
-func Search(song string, duration string) string{
+func Search(song string, duration string, artist string) string{
     encoded := url.QueryEscape(song)
     client := &http.Client{}
     req_link := fmt.Sprintf("https://inv.nadeko.net/search?q=%s+%s", encoded, "Audio")
@@ -36,6 +36,6 @@ func Search(song string, duration string) string{
         log.Fatal(err)
     }
 
-    return Parser(string(body), duration)
+    return Parser(string(body), duration, artist)
     //fmt.Println(string(body))
 }

@@ -70,7 +70,7 @@ func Converter(filename string) string{
     // song,artist and duration
     for _,j := range data {
         song := fmt.Sprintf("%s %s", j[1], j[2])
-        result := Search(song, j[8])
+        result := Search(song, j[8], j[2])
         if result != "No match" {
             playlist.WriteString(result)
             playlist.WriteString(",")
