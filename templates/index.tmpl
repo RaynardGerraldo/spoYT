@@ -1,5 +1,62 @@
-<html>
-  <h1>
-    {{ .title }}
-  </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ .title }}</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 2rem;
+    }
+
+    form {
+      background: white;
+      padding: 1.5rem 2rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    input[type="submit"] {
+      background: #0069d9;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background: #0053b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ .title }}</h1>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="file">Upload Playlist CSV here</label>
+    <input type="file" id="file" name="file" accept=".csv" required>
+    <input type="submit" value="Upload File">
+  </form>
+</body>
 </html>
