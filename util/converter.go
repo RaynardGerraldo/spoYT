@@ -8,6 +8,7 @@ import (
     "strings"
     "bytes"
     "io"
+    "net/http"
 )
 
 // read file bytes every 32 kb, adds to count on \n
@@ -102,5 +103,22 @@ func Converter(filename string) string{
         }
     }
 
-    return playlist.String()
+    // final playlist link
+    if playlist.String() != "https://www.youtube.com/watch_videos?video_ids=" {
+        client := &http.Client{}
+        req, err := http.NewRequest("GET", playlist.String(), nil)
+        if err != nil {
+           log.Fatal(err)
+        }
+
+        resp, err := client.Do(req)
+        if err != nil {
+           log.Fatal(err)
+        }
+        defer resp.Body.Close()
+
+        finalURL := resp.Request.URL.String()
+    }
+
+    return finalURL
 }
