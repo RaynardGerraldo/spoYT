@@ -3,13 +3,13 @@
 Convert Spotify Playlist to Youtube Playlist (50 songs max), No Login
 
 ## Setup
-`go mod tidy`
+`git clone https://github.com/RaynardGerraldo/spoyt ; cd spoyt ; go get ; go build`
 
 ## Usage
 
 https://www.chosic.com/spotify-playlist-exporter/ -- download your Spotify playlist csv here
 
-` go run . <file.csv> `
+`./spoyt <file.csv>`
 
 ## TODO
 
