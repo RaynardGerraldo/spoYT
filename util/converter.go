@@ -40,8 +40,13 @@ func Converter(filename string) string{
     if err != nil {
         log.Fatal(err)
     }
-    failcount := count
 
+    if count > 51 {
+        fmt.Println("Playlist count exceed 50, will stop at 50th song")
+        count = 50
+    }
+    failcount := count
+    
     defer file.Close()
 
     // reset pointer to beginning of file
@@ -51,17 +56,25 @@ func Converter(filename string) string{
     }
 
     reader := csv.NewReader(file)
-
     // skip first row of csv file
 	_, err = reader.Read()
     if err != nil {
         log.Fatal(err)
     }
 
-    data, err := reader.ReadAll()
-    if err != nil {
-        log.Fatal(err)
+    var data [][]string
+    for i := 0; i < 50; i++{
+        row, err := reader.Read()
+        if err != nil {
+           log.Fatal(err)
+        }
+        data = append(data,row)
     }
+
+    //data, err := reader.ReadAll()
+    //if err != nil {
+        //log.Fatal(err)
+    //}
 
 
     var failsongs []string
