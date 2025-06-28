@@ -64,6 +64,8 @@ func Web() {
     c.JSON(http.StatusOK, gin.H{
         "link": util.Final(playlist.String()),
     })
+    progress = 0
+    start = 0
   })
 
   r.Run()

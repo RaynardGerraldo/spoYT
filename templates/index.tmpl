@@ -65,7 +65,9 @@
     <input type="file" id="file" accept=".csv" required>
     <button id="upload-btn">Upload File</button>
     <div class="progress">Progress: <span id="percent">0%</span></div>
-    <div class="final">Playlist Link: <span id="link"></span></div>
+    <!-- <div class="final">Playlist<a href="url"></a></div> -->
+    <a id="final" href=""></a>
+
   </div>
 
   <script>
@@ -81,7 +83,8 @@
             fetch('/final')
                 .then(res => res.json())
                 .then(link => {
-                    document.getElementById('link').textContent = link.link;
+                    document.getElementById('final').href = link.link;
+                    document.getElementById('final').textContent = link.link;
                 })
           }
         })
@@ -89,6 +92,9 @@
     }
 
     document.getElementById('upload-btn').addEventListener('click', () => {
+      document.getElementById('percent').textContent = "";
+      document.getElementById('final').href = "";
+      document.getElementById('final').textContent = "";
       const fileInput = document.getElementById('file');
       if (!fileInput.files.length) return;
 

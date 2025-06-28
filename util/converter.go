@@ -42,8 +42,6 @@ func Converter(filename string) [][]string{
         log.Fatal(err)
     }
 
-    if count == 51 { count = 50}
-
     if count > 51 {
         fmt.Println("Playlist count exceed 50, will stop at 50th song")
         count = 50
