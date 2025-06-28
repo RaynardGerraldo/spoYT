@@ -104,6 +104,7 @@ func Converter(filename string) string{
     }
 
     // final playlist link
+    finalURL := ""
     if playlist.String() != "https://www.youtube.com/watch_videos?video_ids=" {
         client := &http.Client{}
         req, err := http.NewRequest("GET", playlist.String(), nil)
@@ -117,7 +118,7 @@ func Converter(filename string) string{
         }
         defer resp.Body.Close()
 
-        finalURL := resp.Request.URL.String()
+        finalURL = resp.Request.URL.String()
     }
 
     return finalURL
