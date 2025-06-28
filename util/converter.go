@@ -42,12 +42,14 @@ func Converter(filename string) string{
         log.Fatal(err)
     }
 
+    if count == 51 { count = 50}
+
     if count > 51 {
         fmt.Println("Playlist count exceed 50, will stop at 50th song")
         count = 50
     }
     failcount := count
-    
+
     defer file.Close()
 
     // reset pointer to beginning of file
@@ -64,7 +66,7 @@ func Converter(filename string) string{
     }
 
     var data [][]string
-    for i := 0; i < 50; i++{
+    for i := 0; i < count; i++{
         row, err := reader.Read()
         if err != nil {
            log.Fatal(err)
