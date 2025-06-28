@@ -66,7 +66,7 @@ func Converter(filename string) string{
     }
 
     var data [][]string
-    for i := 0; i < count; i++{
+    for i := 0; i < count-1; i++{
         row, err := reader.Read()
         if err != nil {
            log.Fatal(err)
