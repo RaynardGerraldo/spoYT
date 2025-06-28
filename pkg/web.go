@@ -5,10 +5,18 @@ import (
   "spoyt/util"
   "path/filepath"
   "github.com/gin-gonic/gin"
+  "fmt"
+  "strings"
 )
 
 func Web() {
   r := gin.Default()
+  var data [][]string
+  var playlist strings.Builder
+  playlist.WriteString("https://www.youtube.com/watch_videos?video_ids=")
+  var progress float64
+  var start int = 0
+
   r.LoadHTMLFiles("templates/index.tmpl")
   r.GET("/", func(c *gin.Context) {
     c.HTML(http.StatusOK, "index.tmpl", gin.H{
@@ -28,11 +36,34 @@ func Web() {
         c.String(http.StatusInternalServerError, "Save failed: %v", err)
 	    return
     }
-    util.Converter(dst)
+    data = util.WebConverter(dst)
+  })
 
-    // TODO
-    // Progress Bar
-    // Playlist link output (maybe generate and grab TL link directly?)
+  r.GET("/progress", func(c *gin.Context) {
+    if start >= len(data) {
+        return
+    }
+
+    song := fmt.Sprintf("%s %s", data[start][1], data[start][2])
+    result := util.Search(song, data[start][8], data[start][2])
+    if result != "No match" {
+       playlist.WriteString(result)
+       playlist.WriteString(",")
+       fmt.Printf("%s added to playlist\n", song)
+    } else {
+        fmt.Printf("%s not found\n", song)
+    }
+	progress = progress + 100.0 / float64(len(data))
+    c.JSON(http.StatusOK, gin.H{
+	    "progress": fmt.Sprintf("%.2f", progress),
+	})
+    start++
+  })
+
+  r.GET("/final", func(c *gin.Context) {
+    c.JSON(http.StatusOK, gin.H{
+        "link": util.WebFinal(playlist.String()),
+    })
   })
 
   r.Run()

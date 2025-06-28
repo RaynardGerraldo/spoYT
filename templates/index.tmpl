@@ -18,12 +18,13 @@
       margin-bottom: 2rem;
     }
 
-    form {
+    #upload-box {
       background: white;
       padding: 1.5rem 2rem;
       border: 1px solid #ccc;
       border-radius: 6px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      text-align: center;
     }
 
     label {
@@ -37,7 +38,7 @@
       margin-bottom: 1rem;
     }
 
-    input[type="submit"] {
+    button {
       background: #0069d9;
       color: white;
       border: none;
@@ -46,17 +47,65 @@
       cursor: pointer;
     }
 
-    input[type="submit"]:hover {
+    button:hover {
       background: #0053b3;
+    }
+
+    .progress {
+      margin-top: 1.5rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h1>{{ .title }}</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
+
+  <div id="upload-box">
     <label for="file">Upload Playlist CSV here</label>
-    <input type="file" id="file" name="file" accept=".csv" required>
-    <input type="submit" value="Upload File">
-  </form>
+    <input type="file" id="file" accept=".csv" required>
+    <button id="upload-btn">Upload File</button>
+    <div class="progress">Progress: <span id="percent">0%</span></div>
+    <div class="final">Playlist Link: <span id="link"></span></div>
+  </div>
+
+  <script>
+    function pollProgress() {
+      fetch('/progress')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('percent').textContent = data.progress + '%';
+          if (data.progress < 100) {
+            setTimeout(pollProgress, 1000);
+          }
+          else if (data.progress == 100) {
+            fetch('/final')
+                .then(res => res.json())
+                .then(link => {
+                    document.getElementById('link').textContent = link.link;
+                })
+          }
+        })
+        .catch(err => console.error('Polling error:', err));
+    }
+
+    document.getElementById('upload-btn').addEventListener('click', () => {
+      const fileInput = document.getElementById('file');
+      if (!fileInput.files.length) return;
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Upload failed');
+        pollProgress(); 
+      })
+      .catch(err => console.error('Upload error:', err));
+    });
+  </script>
 </body>
 </html>
+
