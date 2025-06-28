@@ -36,7 +36,7 @@ func Web() {
         c.String(http.StatusInternalServerError, "Save failed: %v", err)
 	    return
     }
-    data = util.WebConverter(dst)
+    data = util.Converter(dst)
   })
 
   r.GET("/progress", func(c *gin.Context) {
@@ -62,7 +62,7 @@ func Web() {
 
   r.GET("/final", func(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
-        "link": util.WebFinal(playlist.String()),
+        "link": util.Final(playlist.String()),
     })
   })
 

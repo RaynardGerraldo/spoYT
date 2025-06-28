@@ -7,5 +7,7 @@ import (
 
 func Cli(arg string){
     fmt.Println(arg)
-    fmt.Println(util.Converter(arg))
+    data := util.Converter(arg)
+    playlist := util.Builder(data)
+    fmt.Println(util.Final(playlist))
 }

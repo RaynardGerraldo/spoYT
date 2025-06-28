@@ -31,7 +31,7 @@ func lineCounter(r io.Reader) (int, error) {
     }
 }
 
-func Converter(filename string) string{
+func Converter(filename string) [][]string{
     file, err := os.Open(filename)
     if err != nil {
         log.Fatal(err)
@@ -48,7 +48,6 @@ func Converter(filename string) string{
         fmt.Println("Playlist count exceed 50, will stop at 50th song")
         count = 50
     }
-    failcount := count
 
     defer file.Close()
 
@@ -74,12 +73,11 @@ func Converter(filename string) string{
         data = append(data,row)
     }
 
-    //data, err := reader.ReadAll()
-    //if err != nil {
-        //log.Fatal(err)
-    //}
+    return data
+}
 
-
+func Builder(data [][]string) string {
+    failcount := len(data)
     var failsongs []string
     var playlist strings.Builder
     playlist.WriteString("https://www.youtube.com/watch_videos?video_ids=")
@@ -98,18 +96,22 @@ func Converter(filename string) string{
         }
     }
 
-    if failcount != count {
-        fmt.Printf("%d out of %d songs converted to youtube playlist\n", failcount, count)
+    if failcount != len(data) {
+        fmt.Printf("%d out of %d songs converted to youtube playlist\n", failcount, len(data))
         for _,fail := range failsongs {
             fmt.Printf("Fail: %s\n", fail)
         }
     }
 
+    return playlist.String()
+}
+
+func Final(playlist string) string {
     // final playlist link
     finalURL := ""
-    if playlist.String() != "https://www.youtube.com/watch_videos?video_ids=" {
+    if playlist != "https://www.youtube.com/watch_videos?video_ids=" {
         client := &http.Client{}
-        req, err := http.NewRequest("GET", playlist.String(), nil)
+        req, err := http.NewRequest("GET", playlist, nil)
         if err != nil {
            log.Fatal(err)
         }
