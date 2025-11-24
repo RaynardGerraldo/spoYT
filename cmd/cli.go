@@ -1,13 +1,13 @@
-package pkg
+package cmd
 
 import (
     "fmt"
     "spoyt/util"
 )
 
-func Cli(arg string){
-    fmt.Println(arg)
-    data := util.Converter(arg)
+func Cli(filename string){
+    fmt.Println(filename)
+    data := util.Converter(filename)
     playlist := util.Builder(data)
     fmt.Println(util.Final(playlist))
 }

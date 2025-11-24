@@ -63,8 +63,11 @@ func Converter(filename string) [][]string{
     }
 
     var data [][]string
-    for i := 0; i < count-1; i++{
+    for i := 0; i < count; i++{
         row, err := reader.Read()
+        if len(row) == 0 {
+            break 
+        }
         if err != nil {
            log.Fatal(err)
         }
@@ -82,7 +85,7 @@ func Builder(data [][]string) string {
     // song,artist and duration
     for _,j := range data {
         song := fmt.Sprintf("%s %s", j[1], j[2])
-        result := Search(song, j[8], j[2])
+        result := Search(song, j[9], j[2])
         if result != "No match" {
             playlist.WriteString(result)
             playlist.WriteString(",")

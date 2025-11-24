@@ -2,13 +2,13 @@ package main
 
 import (
     "os"
-    "spoyt/pkg"
+    "spoyt/cmd"
 )
 
 func main() {
     if len(os.Args) == 2 {
-        pkg.Cli(os.Args[1])
+        cmd.Cli(os.Args[1])
     } else{
-        pkg.Web()
+        cmd.Web()
     }
 }
