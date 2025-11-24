@@ -33,7 +33,7 @@ func lineCounter(r io.Reader) (int, error) {
 func Converter(filename string) ([][]string, error) {
     file, err := os.Open(filename)
     if err != nil {
-        return nil, fmt.Errorf("Failed to open: %w", filename)
+        return nil, fmt.Errorf("Failed to open: %s", filename)
     }
 
     count,err := lineCounter(file)
