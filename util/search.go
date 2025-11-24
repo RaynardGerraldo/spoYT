@@ -5,11 +5,10 @@ import (
     "net/url"
     "net/http"
     "io"
-    "log"
     "math/rand"
 )
 
-func Search(song string, duration string, artist string) string{
+func Search(song string, duration string, artist string) (string, error) {
     encoded := url.QueryEscape(song)
     client := &http.Client{}
     req_link := fmt.Sprintf("https://inv.nadeko.net/search?q=%s+%s", encoded, "Audio")
@@ -17,7 +16,7 @@ func Search(song string, duration string, artist string) string{
     req.Close = true
 
     if err != nil {
-        log.Fatal(err)
+        return "", fmt.Errorf("Failed to build request for search: %w", err)
     }
 
     req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0")
@@ -26,16 +25,15 @@ func Search(song string, duration string, artist string) string{
     req.Header.Set("Cookie", server)
     resp, err := client.Do(req)
     if err != nil {
-        log.Fatal(err)
+        return "", fmt.Errorf("Failed request for search: %w", err)
     }
 
     defer resp.Body.Close()
 
     body, err := io.ReadAll(resp.Body)
     if err != nil {
-        log.Fatal(err)
+        return "", fmt.Errorf("Failed to read response body for search: %w", err)
     }
 
-    return Parser(string(body), duration, artist)
-    //fmt.Println(string(body))
+    return Parser(string(body), duration, artist), nil
 }

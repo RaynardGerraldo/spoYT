@@ -36,16 +36,25 @@ func Web() {
         c.String(http.StatusInternalServerError, "Save failed: %v", err)
 	    return
     }
-    data = util.Converter(dst)
+    data, err = util.Converter(dst)
+    if err != nil {
+        c.String(http.StatusBadRequest, "Failed to read csv: %v", err)
+        return
+    }
   })
 
   r.GET("/progress", func(c *gin.Context) {
     if start >= len(data) {
         return
     }
-
+    // not using Builder because cant track progress.
     song := fmt.Sprintf("%s %s", data[start][1], data[start][2])
-    result := util.Search(song, data[start][8], data[start][2])
+    result,err := util.Search(song, data[start][9], data[start][2])
+    if err != nil {
+        c.String(http.StatusBadRequest, "Failed to search: %v", err)
+        return
+    }
+
     if result != "No match" {
        playlist.WriteString(result)
        playlist.WriteString(",")
@@ -61,8 +70,13 @@ func Web() {
   })
 
   r.GET("/final", func(c *gin.Context) {
+    final,err := util.Final(playlist.String())
+    if err != nil {
+        c.String(http.StatusBadRequest, "Failed to get final link: %v", err)
+        return
+    }
     c.JSON(http.StatusOK, gin.H{
-        "link": util.Final(playlist.String()),
+        "link": final,
     })
     progress = 0
     start = 0

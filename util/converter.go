@@ -2,7 +2,6 @@ package util
 
 import (
     "os"
-    "log"
     "encoding/csv"
     "fmt"
     "strings"
@@ -31,15 +30,15 @@ func lineCounter(r io.Reader) (int, error) {
     }
 }
 
-func Converter(filename string) [][]string{
+func Converter(filename string) ([][]string, error) {
     file, err := os.Open(filename)
     if err != nil {
-        log.Fatal(err)
+        return nil, fmt.Errorf("Failed to open: %w", filename)
     }
 
     count,err := lineCounter(file)
     if err != nil {
-        log.Fatal(err)
+        return nil, fmt.Errorf("Failed to get line count")  
     }
 
     if count > 51 {
@@ -52,14 +51,14 @@ func Converter(filename string) [][]string{
     // reset pointer to beginning of file
     _, err = file.Seek(0, io.SeekStart)
     if err != nil {
-        log.Fatal(err)
+        return nil, fmt.Errorf("Failed to reset pointer")
     }
 
     reader := csv.NewReader(file)
     // skip first row of csv file
 	_, err = reader.Read()
     if err != nil {
-        log.Fatal(err)
+        return nil, fmt.Errorf("Failed to skip first row of file")
     }
 
     var data [][]string
@@ -69,15 +68,15 @@ func Converter(filename string) [][]string{
             break 
         }
         if err != nil {
-           log.Fatal(err)
+           return nil, fmt.Errorf("Failed to read through file")
         }
         data = append(data,row)
     }
 
-    return data
+    return data, nil
 }
 
-func Builder(data [][]string) string {
+func Builder(data [][]string) (string,error) {
     failcount := len(data)
     var failsongs []string
     var playlist strings.Builder
@@ -85,7 +84,10 @@ func Builder(data [][]string) string {
     // song,artist and duration
     for _,j := range data {
         song := fmt.Sprintf("%s %s", j[1], j[2])
-        result := Search(song, j[9], j[2])
+        result,err := Search(song, j[9], j[2])
+        if err != nil {
+            return "", fmt.Errorf("Failed to search: %w", err)
+        }
         if result != "No match" {
             playlist.WriteString(result)
             playlist.WriteString(",")
@@ -103,28 +105,31 @@ func Builder(data [][]string) string {
             fmt.Printf("Fail: %s\n", fail)
         }
     }
-
-    return playlist.String()
+   
+    if playlist.String() == "https://www.youtube.com/watch_videos?video_ids=" {
+        return "", fmt.Errorf("No matches found")
+    }
+    return playlist.String(), nil
 }
 
-func Final(playlist string) string {
+func Final(playlist string) (string,error) {
     // final playlist link
     finalURL := ""
     if playlist != "https://www.youtube.com/watch_videos?video_ids=" {
         client := &http.Client{}
         req, err := http.NewRequest("GET", playlist, nil)
         if err != nil {
-           log.Fatal(err)
+           return "", fmt.Errorf("Failed to build request: %w", err)
         }
 
         resp, err := client.Do(req)
         if err != nil {
-           log.Fatal(err)
+           return "", fmt.Errorf("Failed request: %w", err)
         }
         defer resp.Body.Close()
 
         finalURL = resp.Request.URL.String()
     }
 
-    return finalURL
+    return finalURL, nil
 }
