@@ -14,7 +14,7 @@ func absInt(n int) int {
     return n
 }
 
-func Parser(body string, duration string, artist string) string{
+func Parser(body string, duration string, artist string) string {
     // get video ids
     match := regexp.MustCompile(`.*href="/watch\?v=([^"&]*).*`)
     res := match.FindAllStringSubmatch(body, -1)
@@ -60,7 +60,6 @@ func Parser(body string, duration string, artist string) string{
                 }
             }
         }
-
         if string(duration[1:]) == dur {
             return clean_res[i]
         }

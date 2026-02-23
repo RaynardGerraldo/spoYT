@@ -84,7 +84,7 @@ func Builder(data [][]string) (string,error) {
     // song,artist and duration
     for _,j := range data {
         song := fmt.Sprintf("%s %s", j[1], j[2])
-        result,err := Search(song, j[9], j[2])
+        result,err := Search(song, j[7], j[2])
         if err != nil {
             return "", fmt.Errorf("Failed to search: %w", err)
         }
